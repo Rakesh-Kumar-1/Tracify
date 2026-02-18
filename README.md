@@ -142,5 +142,5 @@ For major changes, open an issue first.
 
 **Author**
 
-Ankit Kumar
-GitHub: https://github.com/Ankitkumarthakur0
+Rakesh Kumar
+GitHub: https://github.com/Rakesh
