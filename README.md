@@ -143,4 +143,4 @@ For major changes, open an issue first.
 **Author**
 
 Rakesh Kumar
-GitHub: https://github.com/Rakesh
+GitHub: https://github.com/Rakesh-Kumar-1/Tracify.git
