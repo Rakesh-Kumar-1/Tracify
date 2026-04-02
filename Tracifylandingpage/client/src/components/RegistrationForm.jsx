@@ -1,11 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import './RegistrationForm.css';
+import '../css_file/RegistrationForm.css';
 
 const RegistrationForm = ({ onSuccess }) => {
     const [formData, setFormData] = useState({
-        name: '', phone: '', altWhatsapp: '', email: '',
-        aadhar: '', address: '', imei1: '', imei2: ''
+        name: '',
+        phone: '',
+        altWhatsapp: '', 
+        email: '',
+        aadhar: '', 
+        address: '', 
+        imei1: '', 
+        imei2: ''
     });
     const [errors, setErrors] = useState({});
     const [photoData, setPhotoData] = useState(null); // Stores base64 string
@@ -159,6 +165,7 @@ const RegistrationForm = ({ onSuccess }) => {
         setServerError('');
 
         try {
+            // include captured photo as photoUrl so server receives it
             const payload = { ...formData, photoUrl: photoData };
             const res = await axios.post('http://localhost:5000/api/register', payload);
             onSuccess(res.data.userId);

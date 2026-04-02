@@ -1,5 +1,5 @@
 import React from 'react';
-import './WelcomePopup.css';
+import '../css_file/WelcomePopup.css';
 
 const WelcomePopup = ({ onClose }) => {
     return (

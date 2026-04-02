@@ -1,5 +1,5 @@
 import React from 'react';
-import './Navbar.css'; // We'll add specific styles if needed, or use global
+import '../css_file/Navbar.css';
 
 const Navbar = ({ onProfileClick, user, onHomeClick }) => {
     return (
@@ -13,7 +13,8 @@ const Navbar = ({ onProfileClick, user, onHomeClick }) => {
                 <button className="profile-btn glass-btn" onClick={onProfileClick}>
                     <div className="profile-icon">
                         {user && user.photoUrl ? (
-                            <img src={user.photoUrl} alt="Profile" className="profile-img-small" />
+                            // <img src={user.photoUrl} alt="Profile" className="profile-img-small" /> 
+                            <span className="profile-default-icon">{user.name.charAt(0)}</span>   
                         ) : (
                             <span className="profile-default-icon">👤</span>
                         )}

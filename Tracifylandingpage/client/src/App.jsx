@@ -14,7 +14,6 @@ function App() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [view, setView] = useState('home'); // 'home', 'credentials'
-
   useEffect(() => {
     if (userId) {
       fetchUser(userId);
@@ -24,9 +23,9 @@ function App() {
   const fetchUser = async (id) => {
     try {
       const res = await axios.get(`http://localhost:5000/api/user/${id}`);
-      setUser(res.data);
+      setUser(res.data.response);
       // If user has no username, they need to create credentials
-      if (!res.data.username) {
+      if (!res.data.response.name) {
         // If we just registered (showWelcome might be true), we wait for popup close
         // If we refreshed and are pending credentials, go to credentials view
         if (!showWelcome) {
@@ -91,40 +90,47 @@ function App() {
   };
 
   const handleDownload = async (type) => {
-    if (type === 'ats') {
-      if (!user || !user.username) {
-        alert("Please complete registration to unlock ATS.");
-        // Scroll to form
-        document.getElementById('registration-form')?.scrollIntoView({ behavior: 'smooth' });
-        return;
-      }
-    }
+    const apkUrl = `${import.meta.env.BASE_URL}Sample.apk`;
+    const appUrl = `${import.meta.env.BASE_URL}Sample.apk`;
+    const link = document.createElement("a");
 
     // Mark download in backend
     if (user) {
+      console.log(user);
       try {
-        await axios.post('http://localhost:5000/api/mark-download', {
+        const res = await axios.post('http://localhost:5000/api/mark-download', {
           userId: user._id,
           type
         });
         // Refresh user to update badges
-        fetchUser(user._id);
+        if(res.data.message === 'Download status updated'){
+          alert(`Downloading ${type === 'ats' ? 'ATS APK' : 'TRACIFY App'}...`);
+          // Trigger actual download (mock)
+          if(type === 'ats'){
+            link.href = apkUrl;
+            link.download = "Tracify-A-Secure-App.apk"; // Suggested filename
+            document.body.appendChild(link);
+            link.click();
+            setUser(prev => ({...prev, atsDownloaded: true}));
+            console.log(user);
+          }else{
+            link.href = appUrl;
+            link.download = "TRACIFY-App.apk"; // Suggested filename
+            document.body.appendChild(link);
+            link.click();
+            setUser(prev => ({...prev, appDownloaded: true}));
+          }
+          document.body.removeChild(link);
+        }
       } catch (err) {
         console.error("Failed to mark download", err);
       }
     }
-
-    // Trigger actual download (mock)
-    alert(`Downloading ${type === 'ats' ? 'ATS APK' : 'TRACIFY App'}...`);
   };
 
   return (
     <div className="app">
-      <Navbar
-        user={user}
-        onProfileClick={() => setShowProfile(true)}
-        onHomeClick={handleHomeClick}
-      />
+      <Navbar user={user} onProfileClick={() => setShowProfile(true)} onHomeClick={handleHomeClick} />
 
       {view === 'home' && (
         <>

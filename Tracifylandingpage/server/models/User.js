@@ -10,16 +10,7 @@ const userSchema = new mongoose.Schema({
     imei1: { type: String, required: true },
     imei2: { type: String, required: true },
     photoUrl: { type: String }, // Base64 or URL
-
-    // Credentials (created in step 2)
-    username: { type: String, unique: true, sparse: true },
-    passwordHash: { type: String },
-
-    // Download Status
-    downloads: {
-        atsDownloaded: { type: Boolean, default: false },
-        appDownloaded: { type: Boolean, default: false }
-    }
-}, { timestamps: true });
+}, 
+{ timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

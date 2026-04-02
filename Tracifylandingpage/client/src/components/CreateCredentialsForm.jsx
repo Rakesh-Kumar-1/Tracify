@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './CreateCredentialsForm.css';
+import '../css_file/CreateCredentialsForm.css';
 
 const CreateCredentialsForm = ({ userId, onSuccess }) => {
     const [formData, setFormData] = useState({
-        username: '', password: '', confirmPassword: ''
+        username: '', 
+        password: '', 
+        confirmPassword: ''
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -19,16 +21,21 @@ const CreateCredentialsForm = ({ userId, onSuccess }) => {
             setError("Passwords don't match");
             return;
         }
+        if(formData.username !== userId){
+            setError("Username must match the provided User ID");
+            return;
+        }
         setLoading(true);
         setError('');
 
         try {
-            await axios.post('http://localhost:5000/api/create-credentials', {
+            const res = await axios.post('http://localhost:5000/api/create-credentials', {
                 userId,
-                username: formData.username,
                 password: formData.password
             });
-            onSuccess();
+            if(res.status === 200){
+                onSuccess();
+            }
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to create credentials');
         } finally {
@@ -45,6 +52,8 @@ const CreateCredentialsForm = ({ userId, onSuccess }) => {
                 {error && <div className="error-msg">{error}</div>}
 
                 <form onSubmit={handleSubmit} className="cred-form">
+                    <h3>Your User Id is below type it with no mistake:</h3>
+                    <h5>{userId}</h5>
                     <input type="text" name="username" placeholder="Create User ID" required className="glass-input" onChange={handleChange} />
                     <input type="password" name="password" placeholder="Create Password" required className="glass-input" onChange={handleChange} />
                     <input type="password" name="confirmPassword" placeholder="Confirm Password" required className="glass-input" onChange={handleChange} />

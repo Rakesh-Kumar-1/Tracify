@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './ProfilePanel.css';
+import '../css_file/ProfilePanel.css';
 
 const ProfilePanel = ({ user, onClose, onLogin, onLogout, onCreateAccount }) => {
     const [loginData, setLoginData] = useState({ username: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-
     const handleLoginChange = (e) => {
         setLoginData({ ...loginData, [e.target.name]: e.target.value });
     };
@@ -77,7 +76,7 @@ const ProfilePanel = ({ user, onClose, onLogin, onLogout, onCreateAccount }) => 
                                 {user.photoUrl ? (
                                     <img src={user.photoUrl} alt="Profile" />
                                 ) : (
-                                    <span>{user.name ? user.name[0] : 'U'}</span>
+                                    <span>{user.name ? user.name.charAt(0) : 'N/A'}</span>
                                 )}
                             </div>
                             <h3>{user.name}</h3>
@@ -115,18 +114,18 @@ const ProfilePanel = ({ user, onClose, onLogin, onLogout, onCreateAccount }) => 
                             <h4>Download Status</h4>
                             <div className="status-row">
                                 <span>ATS APK</span>
-                                <span className={`badge ${user.downloads?.atsDownloaded ? 'success' : 'pending'}`}>
-                                    {user.downloads?.atsDownloaded ? 'Downloaded' : 'Pending'}
+                                <span className={`badge ${user.atsDownloaded? 'success' : 'pending'}`}>
+                                    {user.atsDownloaded? 'Downloaded' : 'Pending'}
                                 </span>
                             </div>
                             <div className="status-row">
                                 <span>TRACIFY App</span>
-                                <span className={`badge ${user.downloads?.appDownloaded ? 'success' : 'pending'}`}>
-                                    {user.downloads?.appDownloaded ? 'Downloaded' : 'Pending'}
+                                <span className={`badge ${user.appDownloaded? 'success' : 'pending'}`}>
+                                    {user.appDownloaded? 'Downloaded' : 'Pending'}
                                 </span>
                             </div>
                         </div>
-
+                        
                         <button className="glass-btn logout-btn" onClick={() => { onLogout(); onClose(); }}>
                             Logout
                         </button>

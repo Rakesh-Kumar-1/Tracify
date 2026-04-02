@@ -1,8 +1,11 @@
 import React from 'react';
-import './HeroDownloads.css';
+import '../css_file/HeroDownloads.css';
 
 const HeroDownloads = ({ user, onDownload }) => {
-    const isAtsUnlocked = user && user.username; // Check if username exists (step 2 complete)
+    let isAtsUnlocked = false;
+    if(user){
+        isAtsUnlocked = true;
+    }
 
     return (
         <div className="hero-container animate-fade-in">
