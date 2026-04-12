@@ -5,7 +5,7 @@ dotenv.config({});
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.URL_FOR_MONGO);
     console.log('Mongoose is connected');
   } catch (error) {
     console.log('Mongoose connection failed:'); 

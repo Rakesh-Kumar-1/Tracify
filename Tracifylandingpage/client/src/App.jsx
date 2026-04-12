@@ -10,44 +10,39 @@ import './index.css';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [userId, setUserId] = useState(localStorage.getItem('tracify_userId') || null);
+  const [userId, setUserId] = useState(null);
   const [showWelcome, setShowWelcome] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [view, setView] = useState('home'); // 'home', 'credentials'
+
   useEffect(() => {
     if (userId) {
-      fetchUser(userId);
+      fetchUser();
     }
   }, [userId]);
 
-  const fetchUser = async (id) => {
+  const fetchUser = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/user/${id}`);
-      setUser(res.data.response);
-      // If user has no username, they need to create credentials
-      if (!res.data.response.name) {
-        // If we just registered (showWelcome might be true), we wait for popup close
-        // If we refreshed and are pending credentials, go to credentials view
+      const res = await axios.get('http://localhost:5000/api/user',{ withCredentials: true });
+      const localData = res.data.response;
+      setUser(localData);
+      if (!localData.name) {
         if (!showWelcome) {
-          // We might want to stay on home if they haven't finished reg, but reg is finished if we have userId.
-          // So if no username, they are in step 2.
-          // However, let's control this via the flow.
+          setView('credentials');
+        }else{
+          setView('home');
         }
       }
     } catch (err) {
       console.error("Failed to fetch user", err);
-      // If 404, maybe clear localStorage
-      if (err.response && err.response.status === 404) {
-        localStorage.removeItem('tracify_userId');
         setUserId(null);
         setUser(null);
-      }
+        setView('home');
     }
   };
 
   const handleRegistrationSuccess = (newUserId) => {
     setUserId(newUserId);
-    localStorage.setItem('tracify_userId', newUserId);
     setShowWelcome(true);
   };
 
@@ -56,25 +51,28 @@ function App() {
     setView('credentials');
   };
 
-  const handleCredentialsSuccess = () => {
+  const handleCredentialsSuccess = async() => {
     // Refresh user to get updated status (username set)
-    fetchUser(userId);
-    setView('home');
+    await fetchUser();
     alert("Account Created Successfully!");
   };
 
   const handleLogin = (id) => {
     setUserId(id);
-    localStorage.setItem('tracify_userId', id);
-    // fetchUser will trigger via useEffect
   };
 
-  const handleLogout = () => {
-    setUserId(null);
-    setUser(null);
-    localStorage.removeItem('tracify_userId');
-    setView('home');
-  };
+  const handleLogout = async () => {
+  try {
+    await axios.get('http://localhost:5000/api/logout', {
+      withCredentials: true
+    });
+  } catch (err) {
+    console.error(err);
+  }
+  setUserId(null);
+  setUser(null);
+  setView('home');
+};
 
   const handleHomeClick = () => {
     setView('home');
@@ -101,7 +99,7 @@ function App() {
         const res = await axios.post('http://localhost:5000/api/mark-download', {
           userId: user._id,
           type
-        });
+        }, { withCredentials: true });
         // Refresh user to update badges
         if(res.data.message === 'Download status updated'){
           alert(`Downloading ${type === 'ats' ? 'ATS APK' : 'TRACIFY App'}...`);

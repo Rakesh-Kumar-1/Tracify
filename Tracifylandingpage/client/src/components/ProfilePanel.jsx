@@ -15,7 +15,7 @@ const ProfilePanel = ({ user, onClose, onLogin, onLogout, onCreateAccount }) => 
         setLoading(true);
         setError('');
         try {
-            const res = await axios.post('http://localhost:5000/api/login', loginData);
+            const res = await axios.post('http://localhost:5000/api/login', loginData,{ withCredentials: true });
             onLogin(res.data.userId);
             onClose();
         } catch (err) {
